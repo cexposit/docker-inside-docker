@@ -1,0 +1,38 @@
+# Run:
+#    docker-compose up -d
+#    Ports:
+#        - MinIO:             9000-9001
+#        - Mongo DB:              27017
+# Stop:
+#    docker-compose down
+
+version: '3.7'
+
+services:
+
+  # MinIO
+  minio:
+    container_name: minio
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server --console-address ":9001" /data
+    volumes:
+      - minio_storage:/data
+
+  # MongoDB
+  mongodb:
+    image: mongo:latest
+    container_name: kaizten-mongo-api-dev
+    command: mongod --port 27017
+    ports:
+      - "27017:27017"
+    volumes:
+      - "$HOME/docker/volumes/mongodb:/data/db"
+
+volumes:
+  minio_storage: {}
